@@ -1,0 +1,18 @@
+.container.py-5
+  .row.justify-content-center
+    .col-lg-12
+      -# Shared Header
+      = render "shared/header"
+
+      -# Calendar
+      = month_calendar(events: @todos) do |date, todos|
+        = link_to daily_todos_path(date: date), class: "calendar-day-link", data: { turbo_frame: "daily_todos_sidebar" } do
+          %span.date-label{ class: date == Date.today ? "today-badge" : "" }
+            = date.day
+
+        .todo-wrapper.d-flex.flex-column.gap-1{ id: "calendar_day_#{date}" }
+          - todos.each do |todo|
+            = render partial: "todo", locals: { todo: todo }
+
+      -# Sidebar for Daily Todos
+      = turbo_frame_tag "daily_todos_sidebar"

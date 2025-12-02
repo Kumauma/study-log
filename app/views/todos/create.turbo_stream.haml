@@ -1,0 +1,14 @@
+-# Append the new todo item to the sidebar todo list
+= turbo_stream.append "sidebar_todo_list" do
+  = render partial: "todo", locals: { todo: @todo, prefix: "sidebar" }
+
+-# Remove the empty message if it exists
+= turbo_stream.remove "empty_message"
+
+-# Append the new todo item to the appropriate calendar day
+= turbo_stream.append "calendar_day_#{@todo.start_time.to_date}" do
+  = render partial: "todo", locals: { todo: @todo, prefix: "" }
+
+-# Replace the new todo form with a fresh one
+= turbo_stream.replace "new_todo" do
+  = render partial: "form", locals: { todo: Todo.new(start_time: @todo.start_time) }

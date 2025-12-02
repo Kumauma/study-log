@@ -1,0 +1,45 @@
+= simple_form_for :preview, url: preview_markdown_path, method: :post, html: { id: "md_form" } do |f|
+  .row.g-4
+    -# 1. Left: Editor
+    .col-md-6
+      .card.h-100.border.bg-light.rounded-4
+        .card-header.bg-transparent.border-bottom-0.pt-3.pb-0
+          %span.badge.bg-secondary.text-white Daily Report Editor
+
+        .card-body.overflow-auto{ style: "max-height: 550px;" }
+          -# Textarea Input Area
+          .mb-0
+            -# Markdown Textarea Input
+            = f.input :content, as: :text,                |
+              label: false,                               |
+              placeholder: "Enter your daily report here...",     |
+              input_html: { value: content, rows: 15, style: "border-radius: 12px; font-family: inherit; font-size: 1rem;" } |
+
+    -# 2. Right: Preview (Viewer)
+    .col-md-6
+      .card.h-100.border.bg-light.rounded-4
+        .card-header.bg-transparent.border-bottom-0.pt-3.pb-0
+          %span.badge.bg-secondary.text-white Preview Result
+
+        .card-body.overflow-auto{ style: "max-height: 550px;" }
+          -# Render the content converted to HTML through a helper
+          .markdown-body
+            - if content.present?
+              = markdown(content)
+            - else
+              %p.text-muted.text-center.mt-4
+                %i.bi.bi-arrow-left.me-2
+                Enter content on the left and click Preview.
+
+  -# 3. Buttons Row
+  .row.mt-4
+    .d-flex.justify-content-center.gap-3.mt-4
+      -# Preview button
+      = button_tag type: "submit", class: "btn btn-primary rounded-pill px-5 py-2 fw-bold shadow-sm" do
+        %i.bi.bi-eye.me-2
+        Preview
+
+      -# Reset button (Sends a request to the server to reset the form)
+      = link_to reset_markdown_path, data: { turbo_method: :post }, class: "btn btn-outline-secondary rounded-pill px-5 py-2 fw-bold shadow-sm" do
+        %i.bi.bi-arrow-counterclockwise.me-2
+        Reset

@@ -1,0 +1,23 @@
+-# Determine if there are errors on the content field
+- has_error = todo.errors[:content].any?
+
+-# Todo Form Partial
+= simple_form_for(todo, url: todos_path, html: { id: "new_todo", autocomplete: "off" }) do |f|
+
+  -# Hidden field to send the date information
+  = f.input :start_time, as: :hidden
+
+  -# Bootstrap Input Group (input field + button)
+  .input-group{ class: ("is-invalid" if has_error) }
+    -# Create input field without label
+    = f.input_field :content, class: "form-control #{'is-invalid' if has_error}", placeholder: "Enter new task...", required: true
+
+    -# Submit button
+    = button_tag type: "submit", class: "btn btn-primary" do
+      %i.bi.bi-plus-lg
+
+  -# Display error message if there are validation errors
+  - if has_error
+    .invalid-feedback.d-block.small.mt-1
+      %i.bi.bi-exclamation-circle.me-1
+      = todo.errors[:content].first

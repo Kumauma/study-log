@@ -1,0 +1,47 @@
+= turbo_frame_tag "daily_todos_sidebar" do
+
+  -# Bootstrap Offcanvas Component
+  .offcanvas.offcanvas-end.d-flex.flex-column{
+    data: {
+      controller: "offcanvas report",
+      report_date_value: @target_date.to_s
+    }
+  }
+
+    -# Header - Date Display and Close Button
+    .offcanvas-header.bg-light.flex-shrink-0.d-flex.justify-content-between.align-items-center
+      %h5.offcanvas-title.fw-bold.text-primary
+        %i.bi.bi-calendar-event.me-2
+        = @target_date.strftime("%Y - %m - %d (%a)")
+
+      .d-flex.gap-2.align-items-center
+        -# Report Copy Button
+        %button.btn.btn-outline-success.btn-sm.d-flex{
+          type: "button",
+          data: { action: "click->report#copy" },
+          title: "Copy Daily Report to Clipboard"
+        }
+          %i.bi.bi-clipboard-check.me-1
+          日報 Copy
+
+        -# Close Button
+        %button.btn-close{
+          type: "button",
+          "data-bs-dismiss" => "offcanvas",
+          "aria-label" => "Close"
+        }
+
+    -# Body - Todo List
+    #daily_sidebar_body.offcanvas-body.flex-grow-1.overflow-y-auto.p-3
+      #sidebar_todo_list.list-group.list-group-flush
+        - if @daily_todos.any?
+          - @daily_todos.each do |todo|
+            -# Reuse the partial we created earlier
+            = render partial: "todo", locals: { todo: todo, prefix: "sidebar" }
+        - else
+          = render "empty_state"
+
+    -# Footer - New Todo Form
+    .offcanvas-footer.p-3.bg-light.border-top
+      -# New Todo Form
+      = render "form", todo: Todo.new(start_time: @target_date)

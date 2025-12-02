@@ -1,0 +1,28 @@
+.container.py-5
+  .row.justify-content-center
+    .col-md-6.col-lg-5
+      .card.border-0.shadow.rounded-4
+        .card-body.p-4.p-sm-5
+          .text-center.mb-4
+            %i.bi.bi-envelope-check.text-primary.display-4.mb-3
+            %h3.fw-bold.text-primary Resend Confirmation Instructions
+            %p.text-muted.small Didn't receive the confirmation email? Enter your email address and we'll send it again.
+
+          = simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f|
+            = f.error_notification
+            = f.full_error :confirmation_token
+
+            .form-inputs
+              = f.input :email,                                                                          |
+                required: true,                                                                          |
+                autofocus: true,                                                                         |
+                label: "Email Address",                                                                  |
+                value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), |
+                input_html: { autocomplete: "email" },                                                   |
+                wrapper_html: { class: "mb-4" }                                                          |
+
+            .form-actions.d-grid.mb-3
+              = f.button :submit, "Resend Confirmation Instructions", class: "btn btn-primary btn-lg rounded-pill fw-bold"
+
+          .text-center.small
+            = render "devise/shared/links"

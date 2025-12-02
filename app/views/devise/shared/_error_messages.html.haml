@@ -1,0 +1,14 @@
+- if resource.errors.any?
+  .alert.alert-danger.alert-dismissible.fade.show.mb-4{role: "alert"}
+    -# Alert header with icon
+    %strong.d-flex.align-items-center
+      %i.bi.bi-exclamation-triangle-fill.me-2
+      There were some problems with your submission:
+
+    -# List of error messages
+    %ul.mb-0.mt-2.ps-3.small
+      - resource.errors.full_messages.each do |message|
+        %li= message
+
+    -# Close button for the alert
+    %button.btn-close{type: "button", "data-bs-dismiss" => "alert", "aria-label" => "Close"}

@@ -1,0 +1,92 @@
+.container.py-5
+  .row.justify-content-center
+    .col-lg-12
+
+      -# Shared Header
+      = render "shared/header"
+
+      -# Mypage Main Content
+      .card.border-0.shadow-sm.rounded-4
+        .card-body.p-5
+
+          -# Profile Section
+          .d-flex.align-items-center.mb-5
+            .bg-primary.bg-opacity-10.rounded-circle.d-flex.align-items-center.justify-content-center{ style: "width: 80px; height: 80px;" }
+              %i.bi.bi-person-workspace.text-primary.display-5
+            .ms-4
+              %h3.fw-bold.mb-1= current_user.email
+              %span.text-muted Joined: #{current_user.created_at.strftime("%Y-%m-%d")}
+
+          %hr.my-5
+
+          -# Statistics Section
+          %h4.fw-bold.mb-4
+            %i.bi.bi-bar-chart-line.me-2
+            Monthly Statistics
+
+          .row.g-4
+            -# Monthly Report Count Section
+            .col-md-6
+              .p-4.bg-light.rounded-4.text-center
+                %h5.text-muted.mb-3 Daily Reports Written This Month
+                %h2.fw-bold.text-primary= "#{@monthly_report_count}"
+                %p.small.text-muted Reports
+
+            -# Completed Todos Count Section
+            .col-md-6
+              .p-4.bg-light.rounded-4.text-center
+                %h5.text-muted.mb-3 Completed Todos This Month
+                %h2.fw-bold.text-success= "#{@done_count}"
+                %p.small.text-muted Todos
+
+          -# Monthly Achievement Rate Section
+          .row.mt-4
+            .col-12
+              .card.border-0.bg-white.rounded-4.shadow-sm
+                .card-body.p-4.text-center
+                  %h5.text-muted.mb-4 Monthly Achievement Rate
+
+                  -# 1. Chart Area (Centered Alone)
+                  -# Centered with mx-auto and fixed size
+                  .mx-auto.mb-3{ style: "width: 200px; height: 200px;" }
+                    %canvas{ data: { controller: "chart", chart_done_value: @done_count, chart_total_value: @total_count } }
+
+                  -# 2. Text Area (Below the Chart)
+                  .mt-2
+                    %h1.fw-bold.text-primary.display-3.mb-0{ style: "letter-spacing: -2px;" }
+                      = "#{@percentage}%"
+
+                    -# Display counts below the percentage
+                    %p.text-muted.fs-5.mb-3
+                      %span.fw-bold.text-dark= @done_count
+                      \/
+                      = @total_count
+                      Tasks
+
+                  -# 3. Encouragement Badge Area
+                  %div
+                    - if @percentage >= 80
+                      %span.badge.bg-success.rounded-pill.px-3.py-2 Excellent! 🎉
+                    - elsif @percentage >= 50
+                      %span.badge.bg-warning.text-dark.rounded-pill.px-3.py-2 Good Job! 👍
+                    - else
+                      %span.badge.bg-secondary.rounded-pill.px-3.py-2 Keep Going! 🔥
+
+          -# Markdown Editor & Preview Section
+          .row.my-5
+            .col-12
+              .card.border-0.bg-white.rounded-4.shadow-sm
+                .card-body.p-4
+                  %h5.text-muted.mb-4
+                    %i.bi.bi-markdown.me-2
+                    Daily Report Preview
+
+                  -# Turbo Stream target area to be replaced (ID: markdown_editor_section)
+                  #markdown_editor_section
+                    = render "preview_form", content: ""
+
+          -# Back to Calendar Button
+          %div.mt-5.text-center
+            = link_to root_path, class: "btn btn-outline-primary rounded-pill px-4" do
+              %i.bi.bi-arrow-left.me-2
+              Back to Calendar

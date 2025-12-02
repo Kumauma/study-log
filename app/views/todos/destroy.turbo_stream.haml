@@ -1,0 +1,10 @@
+-# Remove the todo item from the calendar day
+= turbo_stream.remove dom_id(@todo)
+
+-# Remove the todo item from the sidebar todo list
+= turbo_stream.remove dom_id(@todo, "sidebar")
+
+-# If there are no more todos for that day, append the empty state message to the daily sidebar
+- unless current_user.todos.where(start_time: @todo.start_time.all_day).exists?
+  = turbo_stream.append "daily_sidebar_body" do
+    = render partial: "empty_state"

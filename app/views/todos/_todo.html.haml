@@ -1,0 +1,44 @@
+-# Partial for rendering a single todo item
+- prefix = local_assigns[:prefix]
+
+-# Check if we are in sidebar context
+- is_sidebar = prefix.present?
+
+-# Determine classes based on context
+- if is_sidebar
+  - element_id = dom_id(todo, prefix)
+  - text_class = "text-wrap text-break"
+  - padding_class = "p-3"
+  - font_size = "0.95rem"
+  - icon_size = "1.3rem"
+- else
+  - element_id = dom_id(todo)
+  - text_class = "text-truncate"
+  - padding_class = "py-1 px-2"
+  - font_size = "0.75rem"
+  - icon_size = "0.7rem"
+
+-# Main todo item container
+.my-1{id: element_id}
+
+  -# Flex container for todo content and optional delete button
+  .d-flex.align-items-stretch.gap-1
+
+    -# Link to toggle completion status
+    = link_to toggle_todo_path(todo), data: { turbo_method: :patch }, class: "text-decoration-none flex-grow-1", style: "min-width: 0;" do
+
+      .p-3.rounded-2.border-start.border-4.shadow-sm{ class: [padding_class, text_class, todo.complete ? "bg-light text-muted border-secondary" : "bg-primary bg-opacity-10 text-primary border-primary"], style: "font-size: #{font_size};" }
+        .d-flex.align-items-center.h-100
+          .flex-shrink-0.me-2.d-flex.align-items-center
+            - if todo.complete
+              %i.bi.bi-check-circle-fill.me-1.text-secondary{style: "font-size: #{icon_size};"}
+            - else
+              %i.bi.bi-circle.me-1.text-primary{style: "font-size: #{icon_size};"}
+
+          .flex-grow-1{ style: "min-width: 0;" }
+            %span= todo.content
+
+    -# Delete button only in sidebar context
+    - if is_sidebar
+      = link_to todo_path(todo), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this task?" }, class: "btn btn-light border shadow-sm text-secondary d-flex align-items-center justify-content-center px-3", style: "border-radius: 0.375rem;" do
+        %i.bi.bi-trash3.text-danger{ style: "font-size: 1.1rem;" }

@@ -1,0 +1,31 @@
+.simple-calendar.p-3
+  .d-flex.justify-content-between.align-items-center.mb-4.px-2
+    .d-flex.align-items-baseline
+      %h2.fw-bold.text-primary.m-0.me-2{:style => "letter-spacing: -1px;"}
+        = t('date.month_names')[start_date.month]
+      %span.h4.text-muted.fw-light
+        = start_date.year
+
+    .btn-group.shadow-sm.rounded-pill.overflow-hidden
+      = link_to calendar.url_for_previous_view, class: "btn btn-white bg-white text-secondary border-0 calendar-nav-btn" do
+        %i.bi.bi-chevron-left
+        = t('simple_calendar.previous', default: 'Prev')
+
+      = link_to t('simple_calendar.today', default: 'Today'), calendar.url_for_today_view, class: "btn btn-white bg-white text-dark fw-bold border-0 px-3 calendar-nav-btn"
+
+      = link_to calendar.url_for_next_view, class: "btn btn-white bg-white text-secondary border-0 calendar-nav-btn" do
+        = t('simple_calendar.next', default: 'Next')
+        %i.bi.bi-chevron-right
+
+  .bg-white.rounded-3.shadow-sm.overflow-hidden
+    %table.table.table-borderless.m-0
+      %thead
+        %tr
+          - date_range.slice(0, 7).each do |day|
+            %th= t('date.abbr_day_names')[day.wday]
+      %tbody
+        - date_range.each_slice(7) do |week|
+          %tr
+            - week.each do |day|
+              = content_tag :td, class: calendar.td_classes_for(day) do
+                - instance_exec(day, calendar.sorted_events_for(day), &passed_block)

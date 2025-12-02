@@ -1,0 +1,5 @@
+= turbo_stream.replace @todo do
+  = render @todo
+
+= turbo_stream.replace dom_id(@todo, "sidebar") do
+  = render partial: "todos/todo", locals: { todo: @todo, prefix: "sidebar" }
