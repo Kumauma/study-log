@@ -38,3 +38,9 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+.vscode/
+.idea/
+.DS_Store
+
+.kamal/hooks
